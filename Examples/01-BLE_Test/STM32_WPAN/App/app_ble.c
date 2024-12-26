@@ -235,7 +235,7 @@ uint8_t index_con_int, mutex;
  * Advertising Data
  */
 #if (P2P_SERVER1 != 0)
-static const char a_LocalName[] = {AD_TYPE_COMPLETE_LOCAL_NAME ,'W','e','A','c','t'};
+static const char a_LocalName[] = {AD_TYPE_COMPLETE_LOCAL_NAME ,'M','o','t','o'};
 uint8_t a_ManufData[14] = {sizeof(a_ManufData)-1,
                            AD_TYPE_MANUFACTURER_SPECIFIC_DATA,
                            0x01,                               /*SKD version */

@@ -83,7 +83,7 @@ void P2PS_STM_App_Notification(P2PS_STM_App_Notification_evt_t *pNotification)
 
     case P2PS_STM_WRITE_EVT:
 /* USER CODE BEGIN P2PS_STM_WRITE_EVT */
-		led_blink_en = pNotification->DataTransfered.pPayload[0];
+		led_blink_en = pNotification->DataTransfered.pPayload[1];
 		APP_DBG_MSG("0x%x%x\r\n",pNotification->DataTransfered.pPayload[0],pNotification->DataTransfered.pPayload[1]);
 /* USER CODE END P2PS_STM_WRITE_EVT */
       break;
