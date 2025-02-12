@@ -1,0 +1,24 @@
+#define SPI_CS_PORT GPIOA
+#define SPI_CS_PIN LL_2
+#define LCD_RES_PORT GPIOA
+#define LCD_RES_PIN LL_3
+#define LCD_DC_PORT GPIOA
+#define LCD_DC_PIN LL_4
+
+#define SPI_SCLK_PORT GPIOA
+#define SPI_SCLK_PIN LL_5
+
+#define SPI_MOSI_PORT GPIOA
+#define SPI_MOSI_PIN LL_7
+
+#define ADC_VOLT_PORT GPIOA
+#define ADC_VOLT_PIN LL_8
+
+#define ADC_TERM_PORT GPIOA
+#define ADC_TERM_PIN LL_8
+
+#define LCD_PWR_PORT GPIOB
+#define LCD_PWR_PIN LL_6
+
+#define DS_DC_PORT GPIOB
+#define DS_DC_PIN LL_3
