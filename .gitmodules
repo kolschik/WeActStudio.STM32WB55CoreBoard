@@ -1,0 +1,3 @@
+[submodule "Examples/01-BLE_Test/u8g2"]
+	path = Examples/01-BLE_Test/u8g2
+	url = https://github.com/kolschik/u8g2.git
