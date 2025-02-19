@@ -15,11 +15,12 @@ target_compile_definitions(stm32cubemx INTERFACE
 target_include_directories(stm32cubemx INTERFACE
     ../../Core/Inc
     ../../STM32_WPAN/App
-    ../../USB_Device/App
-    ../../USB_Device/Target
     ../../Drivers/STM32WBxx_HAL_Driver/Inc
     ../../Drivers/STM32WBxx_HAL_Driver/Inc/Legacy
     ../../Utilities/lpm/tiny_lpm
+    ../../Middlewares/Third_Party/FreeRTOS/Source/include
+    ../../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
+    ../../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
     ../../Middlewares/ST/STM32_WPAN
     ../../Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread
     ../../Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread/tl
@@ -30,10 +31,7 @@ target_include_directories(stm32cubemx INTERFACE
     ../../Middlewares/ST/STM32_WPAN/ble/core/template
     ../../Middlewares/ST/STM32_WPAN/ble/svc/Inc
     ../../Middlewares/ST/STM32_WPAN/ble/svc/Src
-    ../../Middlewares/ST/STM32_USB_Device_Library/Core/Inc
-    ../../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
     ../../Drivers/CMSIS/Device/ST/STM32WBxx/Include
-    ../../Utilities/sequencer
     ../../Middlewares/ST/STM32_WPAN/ble
     ../../Drivers/CMSIS/Include
 )
@@ -41,30 +39,31 @@ target_include_directories(stm32cubemx INTERFACE
 target_sources(stm32cubemx INTERFACE
     ../../Core/Src/main.c
     ../../Core/Src/gpio.c
+    ../../Core/Src/app_freertos.c
     ../../Core/Src/adc.c
     ../../Core/Src/dma.c
     ../../Core/Src/ipcc.c
     ../../Core/Src/memorymap.c
     ../../Core/Src/rf.c
     ../../Core/Src/rtc.c
+    ../../Core/Src/spi.c
     ../../Core/Src/app_entry.c
     ../../Core/Src/app_debug.c
     ../../Core/Src/hw_timerserver.c
-    ../../Core/Src/hw_uart.c
     ../../Core/Src/stm32_lpm_if.c
-    ../../Core/Src/usart.c
+    ../../Core/Src/freertos_port.c
     ../../Core/Src/stm32wbxx_it.c
     ../../Core/Src/stm32wbxx_hal_msp.c
+    ../../Core/Src/stm32wbxx_hal_timebase_tim.c
     ../../STM32_WPAN/Target/hw_ipcc.c
     ../../STM32_WPAN/App/app_ble.c
-    ../../STM32_WPAN/App/p2p_server_app.c
-    ../../USB_Device/App/usb_device.c
-    ../../USB_Device/App/usbd_desc.c
-    ../../USB_Device/App/usbd_cdc_if.c
-    ../../USB_Device/Target/usbd_conf.c
-    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_pcd.c
-    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_pcd_ex.c
-    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_ll_usb.c
+    ../../STM32_WPAN/App/dis_app.c
+    ../../STM32_WPAN/App/hrs_app.c
+    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_tim.c
+    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_tim_ex.c
+    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_adc.c
+    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_adc_ex.c
+    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_ll_adc.c
     ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_rcc.c
     ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_ll_rcc.c
     ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_rcc_ex.c
@@ -79,17 +78,22 @@ target_sources(stm32cubemx INTERFACE
     ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_cortex.c
     ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal.c
     ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_exti.c
-    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_adc.c
-    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_adc_ex.c
-    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_ll_adc.c
     ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_ipcc.c
     ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_rtc.c
     ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_rtc_ex.c
-    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_tim.c
-    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_tim_ex.c
-    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_uart.c
-    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_uart_ex.c
+    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_spi.c
+    ../../Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_spi_ex.c
     ../../Core/Src/system_stm32wbxx.c
+    ../../Middlewares/Third_Party/FreeRTOS/Source/croutine.c
+    ../../Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
+    ../../Middlewares/Third_Party/FreeRTOS/Source/list.c
+    ../../Middlewares/Third_Party/FreeRTOS/Source/queue.c
+    ../../Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
+    ../../Middlewares/Third_Party/FreeRTOS/Source/tasks.c
+    ../../Middlewares/Third_Party/FreeRTOS/Source/timers.c
+    ../../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
+    ../../Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
+    ../../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
     ../../Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread/tl/tl_mbox.c
     ../../Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread/shci/shci.c
     ../../Middlewares/ST/STM32_WPAN/utilities/dbg_trace.c
@@ -102,18 +106,14 @@ target_sources(stm32cubemx INTERFACE
     ../../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hal_aci.c
     ../../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c
     ../../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_l2cap_aci.c
-    ../../Middlewares/ST/STM32_WPAN/ble/svc/Src/p2p_stm.c
+    ../../Middlewares/ST/STM32_WPAN/ble/svc/Src/hrs.c
+    ../../Middlewares/ST/STM32_WPAN/ble/svc/Src/dis.c
     ../../Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread/tl/hci_tl.c
     ../../Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread/tl/hci_tl_if.c
     ../../Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread/tl/shci_tl.c
     ../../Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread/tl/shci_tl_if.c
     ../../Middlewares/ST/STM32_WPAN/ble/svc/Src/svc_ctl.c
-    ../../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c
-    ../../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
-    ../../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
-    ../../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
     ../../Utilities/lpm/tiny_lpm/stm32_lpm.c
-    ../../Utilities/sequencer/stm32_seq.c
     ../../Core/Src/sysmem.c
     ../../Core/Src/syscalls.c
     ../../startup_stm32wb55xx_cm4.s
