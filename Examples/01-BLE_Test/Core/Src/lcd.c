@@ -210,22 +210,22 @@ int t_ext = 100;
 int v_disp = 1380;
 int fault_code = 0;
 int t_meas = 0;
-/*
+
 typedef struct 
 {
   uint8_t hour;
   uint8_t min;
   uint8_t sec;
 }time_et;
-*/
+
 void print_main()
 {
-  //  time_et time_dec;
+    time_et time_dec;
     char str_indoor[6]; 
     char str_volt[6];        
     char time[6];
 
-    //rtc_get_time(&time_dec, &time);
+    rtc_get_time(&time_dec, &time);
 
     if (t_ext != UNREAL_TEMP)
     {
@@ -271,7 +271,7 @@ void print_main()
     }   while (u8g2_NextPage(&u8g2));
 }
 
-/*
+
 void rtc_get_time(time_et *time, char *str)
 {
     time->hour = LL_RTC_TIME_GetHour(RTC); 
@@ -295,7 +295,7 @@ void rtc_get_time(time_et *time, char *str)
       str[5] = 0;
     }
 }
-
+/*
 void print_ext()
 {
     time_et time_dec;
