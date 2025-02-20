@@ -1,4 +1,8 @@
 #include "lcd.h"
+
+
+static void lcd_while();
+/*
 #include "string.h"
 extern volatile int uii;
 
@@ -21,15 +25,15 @@ void spi_periph_init()
 
     LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-  /* Peripheral clock enable */
+  // Peripheral clock enable 
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SPI1);
 
   LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOA);
-  /**SPI1 GPIO Configuration
+  ///SPI1 GPIO Configuration
   PA5   ------> SPI1_SCK
   PA6   ------> SPI1_MISO
   PA7   ------> SPI1_MOSI
-  */
+  
   GPIO_InitStruct.Pin = LL_GPIO_PIN_5;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
@@ -359,4 +363,23 @@ void dig_print(int16_t dig, char* buf)
             *buf++ = 0;            
         }
         *buf++ = 0;
+}
+*/
+
+int lcd_init(){
+
+
+    
+    UTIL_SEQ_RegTask(1<< CFG_TASK_DISPLAY, UTIL_SEQ_RFU, lcd_while);
+    //UTIL_SEQ_SetTask(1<<CFG_TASK_DISPLAY, CFG_SCH_PRIO_0);
+    return 0;
+}
+uint32_t tick;
+
+void lcd_while(){
+	uint32_t tick_now = HAL_GetTick();
+	if(tick_now >= tick)
+	{
+		  tick = tick_now + 2000;
+    }
 }

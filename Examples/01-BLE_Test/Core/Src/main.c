@@ -24,6 +24,8 @@
 #include "memorymap.h"
 #include "rf.h"
 #include "rtc.h"
+#include "lcd.h"
+#include "bsp.h"
 #include "usb_device.h"
 #include "gpio.h"
 
@@ -106,6 +108,8 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+
+  
   MX_DMA_Init();
   MX_RTC_Init();
   MX_USB_Device_Init();
@@ -119,8 +123,11 @@ int main(void)
 	
 	extern uint8_t led_blink_en;
 	extern uint8_t Notification_Status;
-  /* USER CODE END 2 */
 
+
+  /* USER CODE END 2 */
+    lcd_init();  
+    board_button_init();
   /* Init code for STM32_WPAN */
   MX_APPE_Init();
 
@@ -156,7 +163,7 @@ int main(void)
 				text_lenth = sprintf((char *) &text,"20%02d.%02d.%02d %02d:%02d %02d ,%d\r\n",sdatestructureget.Year,sdatestructureget.Month,sdatestructureget.Date, \
 																					stimestructureget.Hours,stimestructureget.Minutes,stimestructureget.Seconds,adc_inp);
 				
-				CDC_Transmit_FS(text,text_lenth);
+				//CDC_Transmit_FS(text,text_lenth);
 				
 				if(Notification_Status)
 					P2PS_STM_App_Update_Char(P2P_NOTIFY_CHAR_UUID, text);

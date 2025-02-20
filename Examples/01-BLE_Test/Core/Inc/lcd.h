@@ -1,11 +1,15 @@
+#pragma once
 #include "main.h"
+#include "stm32_seq.h"
+/*
 #include "spi.h"
 #include "dma.h"
 #include "setup.h"
 #include "cmsis_os.h"
 #include "u8g2.h"
+*/
 
-
+/*
 typedef enum{
     display_off,
     display_on
@@ -24,3 +28,7 @@ uint8_t u8x8_stm32_gpio_and_delay_cb(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int,
 void spi1_complete_payload();
 
 void dig_print(int16_t dig, char* buf);
+
+*/
+
+int lcd_init();
