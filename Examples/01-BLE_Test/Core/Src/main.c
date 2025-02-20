@@ -109,10 +109,12 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
 
-  MX_SPI1_Init();
+
   MX_DMA_Init();
+  
+  MX_SPI1_Init();
   MX_RTC_Init();
-  MX_USB_Device_Init();
+//  MX_USB_Device_Init();
   MX_ADC1_Init();
   MX_RF_Init();
   /* USER CODE BEGIN 2 */
@@ -124,10 +126,10 @@ int main(void)
 	extern uint8_t led_blink_en;
 	extern uint8_t Notification_Status;
 
-
+  board_button_init();
   /* USER CODE END 2 */
     lcd_init();  
-    board_button_init();
+
   /* Init code for STM32_WPAN */
   MX_APPE_Init();
 

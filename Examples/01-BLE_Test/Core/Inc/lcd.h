@@ -10,12 +10,12 @@
 
 */
 
-/*
+
 typedef enum{
     display_off,
     display_on
 } display_pwr_et;
-
+/*
 void spi_periph_init();
 void StartLcd_task(void const * argument);
 void lcd_init(void);

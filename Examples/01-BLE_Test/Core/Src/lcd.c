@@ -3,6 +3,8 @@
 #include "main.h"
 volatile int uii;
 static void lcd_while();
+
+static u8g2_t u8g2;
 /*
 #include "string.h"
 extern 
@@ -19,7 +21,7 @@ osStaticThreadDef_t Lcd_taskControlBlock;
 osMutexId SpimutexHandle;
 osStaticMutexDef_t SpimutexControlBlock;
 
-static u8g2_t u8g2;
+
 
 void spi_periph_init()
 {
@@ -108,24 +110,28 @@ void StartLcd_task(void const * argument)
     }
 
 }
+*/
 
-void lcd_init()
-{
-    lcd_pwr(display_on);
-
-    u8g2_Setup_ssd1305_128x32_adafruit_1(&u8g2, U8G2_R0, u8x8_byte_4wire_hw_spi, u8x8_stm32_gpio_and_delay_cb);
-    u8g2_InitDisplay(&u8g2);
-
-}
 
 void lcd_pwr(display_pwr_et state)
 {
-  if (state) LL_GPIO_ResetOutputPin(PWR_GPIO_Port, PWR_Pin);
-  else LL_GPIO_SetOutputPin(PWR_GPIO_Port, PWR_Pin);
-  osDelay(100);
+    HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, !state);
 }
 
-*/
+
+extern SPI_HandleTypeDef hspi1;
+extern DMA_HandleTypeDef hdma_spi1_tx;
+
+volatile int done = 0;
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hspi);
+  done =1 ;
+  /* NOTE : This function should not be modified, when the callback is needed,
+            the HAL_SPI_TxCpltCallback should be implemented in the user file
+   */
+}
 
 
 
@@ -135,11 +141,15 @@ uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void 
   switch (msg)
   {
   case U8X8_MSG_BYTE_SEND:
-    spi_send(SPI1, (uint8_t *) arg_ptr, 0, arg_int);
-    rv = spi_get_flag_complete(SPI1, 50);
+    done = 0;
+    rv = HAL_SPI_Transmit_DMA(&hspi1, arg_ptr, arg_int);
+    
     if (rv)
     {
       uii = rv;
+    }
+    while (done == 0){
+
     }
     break;
 
@@ -169,10 +179,10 @@ uint8_t u8x8_stm32_gpio_and_delay_cb(U8X8_UNUSED u8x8_t *u8x8, U8X8_UNUSED uint8
   switch (msg)
   {
   case U8X8_MSG_GPIO_AND_DELAY_INIT:
-    osDelay(1);
+    HAL_Delay(1);
     break;
   case U8X8_MSG_DELAY_MILLI:
-    osDelay(arg_int);
+    HAL_Delay(arg_int);
     break;
   case U8X8_MSG_GPIO_DC:
       HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, arg_int);
@@ -186,6 +196,20 @@ uint8_t u8x8_stm32_gpio_and_delay_cb(U8X8_UNUSED u8x8_t *u8x8, U8X8_UNUSED uint8
   }
   return 1;
 }
+
+#define BAT_0 1050
+#define BAT_1 1100
+#define BAT_2 1150
+#define BAT_3 1200
+#define BAT_4 1250
+#define BAT_F 1400
+#define SNOW_THR 500
+#define UNREAL_TEMP 32767
+
+int t_ext = 100;
+int v_disp = 1380;
+int fault_code = 0;
+int t_meas = 0;
 /*
 typedef struct 
 {
@@ -193,15 +217,15 @@ typedef struct
   uint8_t min;
   uint8_t sec;
 }time_et;
-
+*/
 void print_main()
 {
-    time_et time_dec;
+  //  time_et time_dec;
     char str_indoor[6]; 
     char str_volt[6];        
     char time[6];
 
-    rtc_get_time(&time_dec, &time);
+    //rtc_get_time(&time_dec, &time);
 
     if (t_ext != UNREAL_TEMP)
     {
@@ -247,7 +271,7 @@ void print_main()
     }   while (u8g2_NextPage(&u8g2));
 }
 
-
+/*
 void rtc_get_time(time_et *time, char *str)
 {
     time->hour = LL_RTC_TIME_GetHour(RTC); 
@@ -336,7 +360,7 @@ void spi1_complete_payload()
     BaseType_t xHigherPriorityTaskWoken;
     vTaskNotifyGiveFromISR( Lcd_taskHandle, &xHigherPriorityTaskWoken );
 }
-
+*/
 void dig_print(int16_t dig, char* buf)
 {
         if (dig > 9999)
@@ -365,13 +389,20 @@ void dig_print(int16_t dig, char* buf)
         }
         *buf++ = 0;
 }
-*/
+
 
 int lcd_init(){
-
-
-    
     UTIL_SEQ_RegTask(1<< CFG_TASK_DISPLAY, UTIL_SEQ_RFU, lcd_while);
+
+
+    lcd_pwr(display_on);
+  
+      u8g2_Setup_ssd1305_128x32_adafruit_1(&u8g2, U8G2_R0, u8x8_byte_4wire_hw_spi, u8x8_stm32_gpio_and_delay_cb);
+      u8g2_InitDisplay(&u8g2);
+  
+      u8g2_SetPowerSave(&u8g2, 0);
+    
+      print_main();
     //UTIL_SEQ_SetTask(1<<CFG_TASK_DISPLAY, CFG_SCH_PRIO_0);
     return 0;
 }

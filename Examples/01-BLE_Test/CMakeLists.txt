@@ -49,6 +49,24 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/bsp.c
     Core/Src/spi.c
+    u8g2/csrc/u8x8_setup.c
+    u8g2/csrc/u8x8_display.c
+    u8g2/csrc/u8g2_setup.c
+    u8g2/csrc/u8g2_d_setup.c
+    u8g2/csrc/u8g2_ll_hvline.c
+    u8g2/csrc/u8x8_cad.c
+    u8g2/csrc/u8g2_font.c
+    u8g2/csrc/u8g2_arc.c
+    u8g2/csrc/u8g2_hvline.c
+    u8g2/csrc/u8g2_d_memory.c
+    u8g2/csrc/u8x8_byte.c
+    u8g2/csrc/u8g2_intersection.c
+    u8g2/csrc/u8x8_d_ssd1305.c
+    u8g2/csrc/u8x8_gpio.c
+    u8g2/csrc/u8g2_circle.c
+    u8g2/csrc/u8g2_buffer.c
+    u8g2/csrc/u8g2_fonts.c
+    u8g2/csrc/u8x8_8x8.c
     # Add user sources here
 )
 
