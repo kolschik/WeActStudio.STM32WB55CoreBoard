@@ -1,10 +1,11 @@
 #include "lcd.h"
-
-
+#include "bsp.h"
+#include "main.h"
+volatile int uii;
 static void lcd_while();
 /*
 #include "string.h"
-extern volatile int uii;
+extern 
 
 int16_t t_meas, t_junc, t_ext = UNREAL_TEMP;
 uint8_t fault_code;
@@ -117,20 +118,15 @@ void lcd_init()
 
 }
 
-
-
-
-
-
-
-
-
 void lcd_pwr(display_pwr_et state)
 {
   if (state) LL_GPIO_ResetOutputPin(PWR_GPIO_Port, PWR_Pin);
   else LL_GPIO_SetOutputPin(PWR_GPIO_Port, PWR_Pin);
   osDelay(100);
 }
+
+*/
+
 
 
 uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr)
@@ -151,14 +147,16 @@ uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void 
     break;
 
   case U8X8_MSG_BYTE_SET_DC:
-    arg_int ? LL_GPIO_SetOutputPin(OLED_DC_GPIO_Port, OLED_DC_Pin) : LL_GPIO_ResetOutputPin(OLED_DC_GPIO_Port, OLED_DC_Pin);
+    HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, arg_int);
+
+   // arg_int ? HAL_GPIO_SetOutputPin(OLED_DC_GPIO_Port, OLED_DC_Pin) : LL_GPIO_ResetOutputPin(OLED_DC_GPIO_Port, OLED_DC_Pin);
     break;
 
   case U8X8_MSG_BYTE_START_TRANSFER:
-    LL_GPIO_ResetOutputPin(OLED_CS_GPIO_Port, OLED_CS_Pin); // CS=0;
+    HAL_GPIO_WritePin(SPI_CS_PORT, SPI_CS_PIN, 0);// CS=0;
     break;
   case U8X8_MSG_BYTE_END_TRANSFER:
-    LL_GPIO_SetOutputPin(OLED_CS_GPIO_Port, OLED_CS_Pin); // CS=1;
+    HAL_GPIO_WritePin(SPI_CS_PORT, SPI_CS_PIN, 1);// CS=1;
     break;
   default:
     return 0;
@@ -177,15 +175,18 @@ uint8_t u8x8_stm32_gpio_and_delay_cb(U8X8_UNUSED u8x8_t *u8x8, U8X8_UNUSED uint8
     osDelay(arg_int);
     break;
   case U8X8_MSG_GPIO_DC:
-    arg_int ? LL_GPIO_SetOutputPin(OLED_DC_GPIO_Port, OLED_DC_Pin) : LL_GPIO_ResetOutputPin(OLED_DC_GPIO_Port, OLED_DC_Pin);
+      HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, arg_int);
+    //arg_int ? LL_GPIO_SetOutputPin(OLED_DC_GPIO_Port, OLED_DC_Pin) : LL_GPIO_ResetOutputPin(OLED_DC_GPIO_Port, OLED_DC_Pin);
     break;
   case U8X8_MSG_GPIO_RESET:
-    arg_int ? LL_GPIO_SetOutputPin(OLED_RES_GPIO_Port, OLED_RES_Pin) : LL_GPIO_ResetOutputPin(OLED_RES_GPIO_Port, OLED_RES_Pin);
+      HAL_GPIO_WritePin(LCD_RES_PORT, LCD_RES_PIN, arg_int);
+
+    //arg_int ? LL_GPIO_SetOutputPin(OLED_RES_GPIO_Port, OLED_RES_Pin) : LL_GPIO_ResetOutputPin(OLED_RES_GPIO_Port, OLED_RES_Pin);
     break;
   }
   return 1;
 }
-
+/*
 typedef struct 
 {
   uint8_t hour;

@@ -1,12 +1,13 @@
 #pragma once
 #include "main.h"
 #include "stm32_seq.h"
+#include "u8g2.h"
 /*
 #include "spi.h"
 #include "dma.h"
 #include "setup.h"
 #include "cmsis_os.h"
-#include "u8g2.h"
+
 */
 
 /*
