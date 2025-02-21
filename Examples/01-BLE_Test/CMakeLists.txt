@@ -49,6 +49,7 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/bsp.c
     Core/Src/spi.c
+    stm_lib/tmr/tmr.c    
     u8g2/csrc/u8x8_setup.c
     u8g2/csrc/u8x8_display.c
     u8g2/csrc/u8g2_setup.c
@@ -67,18 +68,24 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     u8g2/csrc/u8g2_buffer.c
     u8g2/csrc/u8g2_fonts.c
     u8g2/csrc/u8x8_8x8.c
+
+    Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_ll_tim.c
     # Add user sources here
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     u8g2/csrc  
+    stm_lib/tmr    
+    Drivers/STM32WBxx_HAL_Driver/Inc  
     # Add user defined include paths
 )
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined symbols
+    -DSTM32WB
+    -DUSE_FULL_LL_DRIVER
 )
 
 # Add linked libraries

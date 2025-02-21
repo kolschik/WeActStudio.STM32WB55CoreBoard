@@ -9,6 +9,14 @@
 
 #include "bsp.h"
 
+
+tmr_cc_t tim_frame = {
+    .timer = TIM17,
+    .channel = LL_TIM_CHANNEL_CH1,
+    .mode = LL_TIM_OCMODE_FROZEN
+};
+
+
 void board_button_init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -54,7 +62,8 @@ void board_button_init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(LCD_DC_PORT, &GPIO_InitStruct);  
 
-
+    tim_init(&tim_frame);
+    tim_oc_init(&tim_frame);
 }
 
 uint8_t board_button_getstate(void)
@@ -94,22 +103,5 @@ void board_led_set(uint8_t set)
 }
 
 
-    /*
-tmr_cc_t tim_frame = {
-    .timer = TIM21,
-    .channel = LL_TIM_CHANNEL1,
 
-    uint32_t const mode;    
-    uint32_t const polarity;
-    DMA_TypeDef *const dma;
-    uint32_t const dma_chan;
-#if defined (DMAMUX1) || defined (LL_DMA_REQUEST_0)
-    uint32_t const dma_req;
-#endif        
-    tmr_cc_status_et status;
-    uint32_t const deadtime;    
-}tmr_cc_t;
 
-int tim_init(tmr_cc_t *tmr);
-
-*/

@@ -7,6 +7,7 @@ extern "C"
 #endif
 
 #include "main.h"
+#include "tmr.h"
 
 #ifndef KEY_Pin
 #define KEY_Pin GPIO_PIN_13
