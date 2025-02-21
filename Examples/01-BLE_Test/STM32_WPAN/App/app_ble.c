@@ -1344,6 +1344,7 @@ static void Connection_Interval_Update_Req(void)
  *************************************************************/
 void hci_notify_asynch_evt(void* p_Data)
 {
+  (void) p_Data;
   UTIL_SEQ_SetTask(1 << CFG_TASK_HCI_ASYNCH_EVT_ID, CFG_SCH_PRIO_0);
 
   return;
@@ -1351,6 +1352,7 @@ void hci_notify_asynch_evt(void* p_Data)
 
 void hci_cmd_resp_release(uint32_t Flag)
 {
+  (void) Flag;
   UTIL_SEQ_SetEvt(1 << CFG_IDLEEVT_HCI_CMD_EVT_RSP_ID);
 
   return;
@@ -1358,6 +1360,7 @@ void hci_cmd_resp_release(uint32_t Flag)
 
 void hci_cmd_resp_wait(uint32_t Timeout)
 {
+  (void) Timeout;
   UTIL_SEQ_WaitEvt(1 << CFG_IDLEEVT_HCI_CMD_EVT_RSP_ID);
 
   return;

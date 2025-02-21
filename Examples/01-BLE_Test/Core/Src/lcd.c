@@ -2,8 +2,8 @@
 #include "bsp.h"
 #include "main.h"
 volatile int uii;
-static void lcd_while();
-
+static void lcd_frame_refresh();
+static void frame_refresh_timer_cb();
 static u8g2_t u8g2;
 /*
 #include "string.h"
@@ -390,9 +390,11 @@ void dig_print(int16_t dig, char* buf)
         *buf++ = 0;
 }
 
-
+uint8_t frame_refresh_timer;
 int lcd_init(){
-    UTIL_SEQ_RegTask(1<< CFG_TASK_DISPLAY, UTIL_SEQ_RFU, lcd_while);
+
+    HW_TS_Create(CFG_TIM_PROC_ID_ISR, &frame_refresh_timer, hw_ts_Repeated, frame_refresh_timer_cb);    
+    UTIL_SEQ_RegTask(1<< CFG_TASK_DISPLAY, UTIL_SEQ_RFU, lcd_frame_refresh);
 
 
     lcd_pwr(display_on);
@@ -401,17 +403,20 @@ int lcd_init(){
       u8g2_InitDisplay(&u8g2);
   
       u8g2_SetPowerSave(&u8g2, 0);
-    
-      print_main();
-    //UTIL_SEQ_SetTask(1<<CFG_TASK_DISPLAY, CFG_SCH_PRIO_0);
+      
+      const uint32_t fps = 100*1000/CFG_TS_TICK_VAL; // 10Hz
+      HW_TS_Start(frame_refresh_timer, fps);
+
+
+
     return 0;
 }
 uint32_t tick;
 
-void lcd_while(){
-	uint32_t tick_now = HAL_GetTick();
-	if(tick_now >= tick)
-	{
-		  tick = tick_now + 2000;
-    }
+void lcd_frame_refresh(){
+    print_main();
+}
+
+void frame_refresh_timer_cb(){
+    UTIL_SEQ_SetTask(1<<CFG_TASK_DISPLAY, CFG_SCH_PRIO_0);
 }

@@ -264,8 +264,8 @@ static void HW_IPCC_BLE_AclDataEvtHandler( void )
   return;
 }
 
-__weak void HW_IPCC_BLE_AclDataAckNot( void ){};
-__weak void HW_IPCC_BLE_RxEvtNot( void ){};
+__weak void HW_IPCC_BLE_AclDataAckNot( void ){}
+__weak void HW_IPCC_BLE_RxEvtNot( void ){}
 
 /******************************************************************************
  * SYSTEM
@@ -303,8 +303,8 @@ static void HW_IPCC_SYS_EvtHandler( void )
   return;
 }
 
-__weak void HW_IPCC_SYS_CmdEvtNot( void ){};
-__weak void HW_IPCC_SYS_EvtNot( void ){};
+__weak void HW_IPCC_SYS_CmdEvtNot( void ){}
+__weak void HW_IPCC_SYS_EvtNot( void ){}
 
 /******************************************************************************
  * MAC 802.15.4
@@ -666,4 +666,4 @@ static void HW_IPCC_TRACES_EvtHandler( void )
   return;
 }
 
-__weak void HW_IPCC_TRACES_EvtNot( void ){};
+__weak void HW_IPCC_TRACES_EvtNot( void ){}
