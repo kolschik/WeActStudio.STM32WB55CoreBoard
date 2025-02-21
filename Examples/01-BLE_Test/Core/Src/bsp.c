@@ -92,3 +92,24 @@ void board_led_set(uint8_t set)
     else
         HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,GPIO_PIN_RESET);
 }
+
+
+    /*
+tmr_cc_t tim_frame = {
+    .timer = TIM21,
+    .channel = LL_TIM_CHANNEL1,
+
+    uint32_t const mode;    
+    uint32_t const polarity;
+    DMA_TypeDef *const dma;
+    uint32_t const dma_chan;
+#if defined (DMAMUX1) || defined (LL_DMA_REQUEST_0)
+    uint32_t const dma_req;
+#endif        
+    tmr_cc_status_et status;
+    uint32_t const deadtime;    
+}tmr_cc_t;
+
+int tim_init(tmr_cc_t *tmr);
+
+*/
