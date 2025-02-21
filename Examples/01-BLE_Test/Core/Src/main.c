@@ -121,7 +121,7 @@ int main(void)
   LL_HSEM_1StepLock( HSEM, 5 );
 	
 	HAL_ADCEx_Calibration_Start(&hadc1,ADC_SINGLE_ENDED);
-	HAL_ADC_Start_DMA(&hadc1,(uint32_t *)&adc_inp,1);
+//	HAL_ADC_Start_DMA(&hadc1,(uint32_t *)&adc_inp,1);
 	
 	extern uint8_t led_blink_en;
 	extern uint8_t Notification_Status;

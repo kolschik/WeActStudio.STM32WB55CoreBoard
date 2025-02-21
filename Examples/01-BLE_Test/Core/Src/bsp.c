@@ -26,7 +26,7 @@ void board_button_init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();    
   __HAL_RCC_GPIOC_CLK_ENABLE();
 
-
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM17);
   //Configure GPIO pin : PtPin
   GPIO_InitStruct.Pin = KEY_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;

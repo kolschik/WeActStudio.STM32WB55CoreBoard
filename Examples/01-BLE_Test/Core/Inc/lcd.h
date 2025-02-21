@@ -33,3 +33,4 @@ void dig_print(int16_t dig, char* buf);
 */
 
 int lcd_init();
+void frame_refresh_timer_cb();

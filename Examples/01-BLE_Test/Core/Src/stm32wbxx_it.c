@@ -331,5 +331,8 @@ void HSEM_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+void TIM1_TRG_COM_TIM17_IRQHandler(){
 
+    frame_refresh_timer_cb();
+}
 /* USER CODE END 1 */

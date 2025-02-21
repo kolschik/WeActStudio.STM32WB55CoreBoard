@@ -3,7 +3,7 @@
 #include "main.h"
 volatile int uii;
 static void lcd_frame_refresh();
-static void frame_refresh_timer_cb();
+
 static u8g2_t u8g2;
 /*
 #include "string.h"
@@ -144,9 +144,8 @@ uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void 
     done = 0;
     rv = HAL_SPI_Transmit_DMA(&hspi1, arg_ptr, arg_int);
     
-    if (rv)
-    {
-      uii = rv;
+    if (rv) {
+        return 0;
     }
     while (done == 0){
 
@@ -390,10 +389,8 @@ void dig_print(int16_t dig, char* buf)
         *buf++ = 0;
 }
 
-uint8_t frame_refresh_timer;
 int lcd_init(){
 
-    HW_TS_Create(CFG_TIM_PROC_ID_ISR, &frame_refresh_timer, hw_ts_Repeated, frame_refresh_timer_cb);    
     UTIL_SEQ_RegTask(1<< CFG_TASK_DISPLAY, UTIL_SEQ_RFU, lcd_frame_refresh);
 
 
@@ -405,10 +402,16 @@ int lcd_init(){
       u8g2_SetPowerSave(&u8g2, 0);
       
       const uint32_t fps = 100*1000/CFG_TS_TICK_VAL; // 10Hz
-      HW_TS_Start(frame_refresh_timer, fps);
 
+    uint32_t freq = get_clock();
+    uint32_t psc = freq / 10000;
+    tim_set_freq(TIM17, psc - 1, 500 - 1);
+    LL_TIM_EnableCounter(TIM17);
+    LL_TIM_EnableIT_UPDATE(TIM17);
+    HAL_NVIC_SetPriority(TIM1_TRG_COM_TIM17_IRQn, 3, 0);
+    HAL_NVIC_EnableIRQ(TIM1_TRG_COM_TIM17_IRQn);
 
-
+    print_main();
     return 0;
 }
 uint32_t tick;
@@ -418,5 +421,7 @@ void lcd_frame_refresh(){
 }
 
 void frame_refresh_timer_cb(){
-    UTIL_SEQ_SetTask(1<<CFG_TASK_DISPLAY, CFG_SCH_PRIO_0);
+    if (tmr_get_check_up_it(TIM17)){
+        UTIL_SEQ_SetTask(1<<CFG_TASK_DISPLAY, CFG_SCH_PRIO_0);
+    }
 }
