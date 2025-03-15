@@ -205,10 +205,10 @@ uint8_t u8x8_stm32_gpio_and_delay_cb(U8X8_UNUSED u8x8_t *u8x8, U8X8_UNUSED uint8
 #define SNOW_THR 500
 #define UNREAL_TEMP 32767
 
-int t_ext = 100;
+int t_ext = 1000;
 int v_disp = 1380;
 int fault_code = 0;
-int t_meas = 0;
+int t_meas = 200;
 
 typedef struct 
 {
@@ -261,10 +261,9 @@ void print_main()
         bat[1] = 0;
         u8g2_DrawStr(&u8g2, 100, 24, bat);
         u8g2_SetFontDirection(&u8g2, 0);
-
+        extern uint8_t Notification_Status;
         u8g2_SetFont(&u8g2, u8g2_font_6x12_t_symbols);
-        if (fault_code) u8g2_DrawUTF8(&u8g2, 122, 31,"\u2717");
-        else if (t_meas > SNOW_THR) u8g2_DrawUTF8(&u8g2, 122, 31,"\u2717");
+        if (Notification_Status) u8g2_DrawUTF8(&u8g2, 122, 31,"\u2717");
         else u8g2_DrawUTF8(&u8g2, 122, 31,"*");
 
     }   while (u8g2_NextPage(&u8g2));
