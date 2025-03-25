@@ -49,7 +49,8 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/bsp.c
     Core/Src/spi.c
-    stm_lib/tmr/tmr.c    
+    stm_lib/tmr/tmr.c   
+    stm_lib/adc/adc.c       
     u8g2/csrc/u8x8_setup.c
     u8g2/csrc/u8x8_display.c
     u8g2/csrc/u8g2_setup.c
@@ -77,7 +78,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     u8g2/csrc  
     stm_lib/tmr    
-    Drivers/STM32WBxx_HAL_Driver/Inc  
+    stm_lib/adc     
+    Drivers/STM32WBxx_HAL_Driver/Inc
+    .
     # Add user defined include paths
 )
 

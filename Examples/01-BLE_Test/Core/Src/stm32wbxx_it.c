@@ -335,4 +335,8 @@ void TIM1_TRG_COM_TIM17_IRQHandler(){
 
     frame_refresh_timer_cb();
 }
+
+void ADC1_IRQHandler(){
+    adc_handler();
+}
 /* USER CODE END 1 */

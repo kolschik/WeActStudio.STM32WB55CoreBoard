@@ -54,6 +54,7 @@ extern "C"
     void board_led_toggle(void);
     void board_led_set(uint8_t set);
 
+void adc_cb();  
 #ifdef __cplusplus
 }
 #endif

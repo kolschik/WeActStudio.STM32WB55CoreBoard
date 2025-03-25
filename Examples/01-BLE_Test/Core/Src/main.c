@@ -115,12 +115,12 @@ int main(void)
   MX_SPI1_Init();
   MX_RTC_Init();
 //  MX_USB_Device_Init();
-  MX_ADC1_Init();
+  //MX_ADC1_Init();
   MX_RF_Init();
   /* USER CODE BEGIN 2 */
   LL_HSEM_1StepLock( HSEM, 5 );
 	
-	HAL_ADCEx_Calibration_Start(&hadc1,ADC_SINGLE_ENDED);
+//	HAL_ADCEx_Calibration_Start(&hadc1,ADC_SINGLE_ENDED);
 //	HAL_ADC_Start_DMA(&hadc1,(uint32_t *)&adc_inp,1);
 	
 	extern uint8_t led_blink_en;

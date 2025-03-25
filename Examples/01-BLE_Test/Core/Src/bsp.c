@@ -8,7 +8,19 @@
 ---------------------------------------*/
 
 #include "bsp.h"
+#include "adc.h"
 
+const uint32_t adc_inj[] = {LL_ADC_CHANNEL_15, LL_ADC_CHANNEL_16};
+adc_t adc1 = {
+    .reg_channels = 0,
+    .reg_channels_num = 0,
+    .inj_channels = &adc_inj,
+    .inj_channels_num = sizeof(adc_inj) / sizeof(adc_inj[0]),
+    .inj_channels_trig = LL_ADC_REG_TRIG_SOFTWARE,
+    .cb = adc_cb,
+    .sampling_time = LL_ADC_SAMPLINGTIME_24CYCLES_5,
+    .a = ADC1
+};
 
 tmr_cc_t tim_frame = {
     .timer = TIM17,
@@ -16,6 +28,11 @@ tmr_cc_t tim_frame = {
     .mode = LL_TIM_OCMODE_FROZEN
 };
 
+tmr_cc_t tim1_frame = {
+    .timer = TIM1,
+    .channel = LL_TIM_CHANNEL_CH1,
+    .mode = LL_TIM_OCMODE_FROZEN
+};
 
 void board_button_init(void)
 {
@@ -26,6 +43,7 @@ void board_button_init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();    
   __HAL_RCC_GPIOC_CLK_ENABLE();
 
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM1);
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM17);
   //Configure GPIO pin : PtPin
   GPIO_InitStruct.Pin = KEY_Pin;
@@ -62,8 +80,20 @@ void board_button_init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(LCD_DC_PORT, &GPIO_InitStruct);  
 
+    GPIO_InitTypeDef GPIO_InitStruct_2 = {0};   
+    GPIO_InitStruct_2.Pin = GPIO_PIN_8;
+    GPIO_InitStruct_2.Mode = GPIO_MODE_ANALOG;
+    GPIO_InitStruct_2.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    GPIO_InitStruct_2.Pin = GPIO_PIN_9;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
     tim_init(&tim_frame);
+    tim_init(&tim1_frame);    
     tim_oc_init(&tim_frame);
+
+    adc_init(&adc1);
 }
 
 uint8_t board_button_getstate(void)

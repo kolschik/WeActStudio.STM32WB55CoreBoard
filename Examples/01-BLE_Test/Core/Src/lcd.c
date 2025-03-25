@@ -5,6 +5,12 @@ volatile int uii;
 static void lcd_frame_refresh();
 
 static u8g2_t u8g2;
+
+#include "iir.h"
+
+iir_t iir_pwr = {
+    329,658,329,16384,-25576,10508,14
+};
 /*
 #include "string.h"
 extern 
@@ -263,8 +269,8 @@ void print_main()
         u8g2_SetFontDirection(&u8g2, 0);
         extern uint8_t Notification_Status;
         u8g2_SetFont(&u8g2, u8g2_font_6x12_t_symbols);
-        if (Notification_Status) u8g2_DrawUTF8(&u8g2, 122, 31,"\u2717");
-        else u8g2_DrawUTF8(&u8g2, 122, 31,"*");
+        if (Notification_Status) u8g2_DrawUTF8(&u8g2, 122, 31,"\u2713");
+        else u8g2_DrawUTF8(&u8g2, 122, 31," ");
 
     }   while (u8g2_NextPage(&u8g2));
 }
@@ -404,23 +410,42 @@ int lcd_init(){
 
     uint32_t freq = get_clock();
     uint32_t psc = freq / 10000;
-    tim_set_freq(TIM17, psc - 1, 500 - 1);
+    tim_set_freq(TIM17, psc - 1, 100 - 1);
     LL_TIM_EnableCounter(TIM17);
     LL_TIM_EnableIT_UPDATE(TIM17);
     HAL_NVIC_SetPriority(TIM1_TRG_COM_TIM17_IRQn, 3, 0);
     HAL_NVIC_EnableIRQ(TIM1_TRG_COM_TIM17_IRQn);
 
+    HAL_NVIC_SetPriority(ADC1_IRQn, 3, 0);
+    HAL_NVIC_EnableIRQ(ADC1_IRQn);
+    iir_init(&iir_pwr);
     print_main();
     return 0;
 }
 uint32_t tick;
 
+uint32_t volt;
+
 void lcd_frame_refresh(){
+
     print_main();
+}
+
+void adc_cb(){
+    static uint32_t div = 0;
+
+    uint16_t raw = ADC1->JDR1;
+    raw = iir_f(&iir_pwr, raw);
+    volt = adc_convert(raw, 3300, 100, 15, 0);      
+    if (div++ >= 10){
+        div = 0;
+        UTIL_SEQ_SetTask(1<<CFG_TASK_DISPLAY, CFG_SCH_PRIO_0);        
+    }
+
 }
 
 void frame_refresh_timer_cb(){
     if (tmr_get_check_up_it(TIM17)){
-        UTIL_SEQ_SetTask(1<<CFG_TASK_DISPLAY, CFG_SCH_PRIO_0);
+        adc_start_inj();
     }
 }
