@@ -11,6 +11,8 @@ static u8g2_t u8g2;
 iir_t iir_pwr = {
     329,658,329,16384,-25576,10508,14
 };
+
+uint32_t volt;
 /*
 #include "string.h"
 extern 
@@ -231,7 +233,7 @@ void print_main()
     char time[6];
 
     rtc_get_time(&time_dec, &time);
-
+    t_ext = (volt +5) / 10; 
     if (t_ext != UNREAL_TEMP)
     {
         dig_print(t_ext, str_indoor);
@@ -424,7 +426,7 @@ int lcd_init(){
 }
 uint32_t tick;
 
-uint32_t volt;
+
 
 void lcd_frame_refresh(){
 
