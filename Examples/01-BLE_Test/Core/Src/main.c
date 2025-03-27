@@ -65,6 +65,7 @@ void PeriphCommonClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+          extern char rcv[3];
 uint16_t adc_inp;
 RTC_DateTypeDef sdatestructureget;
 RTC_TimeTypeDef stimestructureget;
@@ -169,6 +170,9 @@ int main(void)
 				
 				if(Notification_Status)
 					P2PS_STM_App_Update_Char(P2P_NOTIFY_CHAR_UUID, text);
+
+					//P2PS_STM_App_Update_Char(P2P_WRITE_CHAR_UUID, rcv);          
+          
 			}
 			else
 			{

@@ -96,7 +96,9 @@ do {\
 #define COPY_P2P_NOTIFY_UUID(uuid_struct)        COPY_UUID_128(uuid_struct,0x00,0x00,0xfe,0x42,0x8e,0x22,0x45,0x41,0x9d,0x4c,0x21,0xed,0xae,0x82,0xed,0x19)
 
 
-
+uint32_t arr[256];
+uint8_t ari = 0;
+char rcv[3];
 /**
  * @brief  Event handler
  * @param  Event: Address of the buffer holding the Event
@@ -113,11 +115,13 @@ static SVCCTL_EvtAckStatus_t PeerToPeer_Event_Handler(void *Event)
   return_value = SVCCTL_EvtNotAck;
   event_pckt = (hci_event_pckt *)(((hci_uart_pckt*)Event)->data);
 
+
   switch(event_pckt->evt)
   {
     case HCI_VENDOR_SPECIFIC_DEBUG_EVT_CODE:
     {
       blecore_evt = (evt_blecore_aci*)event_pckt->data;
+        arr[ari++] = blecore_evt->ecode;
       switch(blecore_evt->ecode)
       {
         case ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE:
@@ -162,6 +166,28 @@ static SVCCTL_EvtAckStatus_t PeerToPeer_Event_Handler(void *Event)
               P2PS_STM_App_Notification(&Notification);
             }
 #endif
+        }
+        break;
+        case ACI_GATT_WRITE_PERMIT_REQ_VSEVT_CODE:
+        {
+          
+          aci_gatt_write_permit_req_event_rp0 * write_perm_req;
+          write_perm_req = (aci_gatt_write_permit_req_event_rp0*)blecore_evt->data;
+              if(write_perm_req->Attribute_Handle == (aPeerToPeerContext.P2PWriteClientToServerCharHdle  + 1)) 
+              {
+                rcv[0] = write_perm_req->Data[0];
+                rcv[1] = write_perm_req->Data[1];
+                rcv[2] = 0;
+                return_value = SVCCTL_EvtAckFlowEnable;          
+                aci_gatt_write_resp(write_perm_req->Connection_Handle,
+                                        write_perm_req->Attribute_Handle,
+                                        0x00, /* write_status = 0 (no error))*/
+                                        0x00, /* err_code */
+                                        write_perm_req->Data_Length,
+                                        (uint8_t *)&(write_perm_req->Data[0]));
+
+              }
+
         }
         break;
 
@@ -223,9 +249,9 @@ void P2PS_STM_Init(void)
     aci_gatt_add_char(aPeerToPeerContext.PeerToPeerSvcHdle,
                       UUID_TYPE_128, &uuid16,
                       2,                                   
-                      CHAR_PROP_WRITE_WITHOUT_RESP|CHAR_PROP_READ,
+                      CHAR_PROP_WRITE|CHAR_PROP_READ,
                       ATTR_PERMISSION_NONE,
-                      GATT_NOTIFY_ATTRIBUTE_WRITE, /* gattEvtMask */
+                      GATT_NOTIFY_WRITE_REQ_AND_WAIT_FOR_APPL_RESP, /* gattEvtMask */
                       10, /* encryKeySize */
                       1, /* isVariable */
                       &(aPeerToPeerContext.P2PWriteClientToServerCharHdle));

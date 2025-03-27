@@ -224,7 +224,7 @@ typedef struct
   uint8_t min;
   uint8_t sec;
 }time_et;
-
+extern char rcv[3];
 void print_main()
 {
     time_et time_dec;
@@ -233,6 +233,7 @@ void print_main()
     char time[6];
 
     rtc_get_time(&time_dec, &time);
+    /*
     t_ext = (volt +5) / 10; 
     if (t_ext != UNREAL_TEMP)
     {
@@ -243,6 +244,8 @@ void print_main()
     {
         strcpy(str_indoor, "..");
     }
+*/
+    strcpy(str_indoor, rcv);
 
     u8g2_FirstPage(&u8g2);
     do
@@ -439,7 +442,7 @@ void adc_cb(){
     uint16_t raw = ADC1->JDR1;
     raw = iir_f(&iir_pwr, raw);
     volt = adc_convert(raw, 3300, 100, 15, 0);      
-    if (div++ >= 10){
+    if (div++ >= 100){
         div = 0;
         UTIL_SEQ_SetTask(1<<CFG_TASK_DISPLAY, CFG_SCH_PRIO_0);        
     }
@@ -450,4 +453,11 @@ void frame_refresh_timer_cb(){
     if (tmr_get_check_up_it(TIM17)){
         adc_start_inj();
     }
+}
+
+void lcd_poll(){
+	UTIL_SEQ_SetEvt(1 << CFG_IDLEEVT_LCD);
+
+	UTIL_SEQ_WaitEvt(1 << CFG_IDLEEVT_LCD);
+
 }
